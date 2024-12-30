@@ -74,7 +74,7 @@ jobs:
 
   changelog:
     runs-on: ${{ vars.OS }}
-    needs: pylint
+    needs: [ pylint, pypi-build]
     steps:
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -165,7 +165,7 @@ jobs:
 
   pypi-build:
     needs: [ pypi-check, details]
-    runs-on: ${{ vars.OS }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -175,27 +175,20 @@ jobs:
           python-version: ${{ vars.PYTHON_VERSION }}
 
       - name: Install Poetry
-        shell: bash
         run: |
           curl -sSL https://install.python-poetry.org | python -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Set project version with Poetry
-        shell: bash
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
           poetry version ${{ needs.details.outputs.new_version }}
 
       - name: Install dependencies
-        shell: bash
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
           poetry install --sync --no-interaction
 
       - name: Build source and wheel distribution
-        shell: bash
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
           poetry build
 
       - name: Upload artifacts
@@ -205,7 +198,6 @@ jobs:
           path: dist/
 
   pypi-publish:
-    name: Upload release to PyPI
     needs: pypi-build
     runs-on: ${{ vars.OS }}
     environment:
