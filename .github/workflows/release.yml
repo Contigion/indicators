@@ -1,4 +1,4 @@
-name: release
+name: Release
 
 on:
   push:
@@ -74,7 +74,7 @@ jobs:
 
   changelog:
     runs-on: ${{ vars.OS }}
-    needs: [ pylint, details ]
+    needs: pylint
     steps:
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -164,7 +164,7 @@ jobs:
           fi
 
   pypi-build:
-    needs: [ pypi-check, release, details]
+    needs: [ release, details]
     runs-on: ${{ vars.OS }}
     steps:
       - uses: actions/checkout@v4
@@ -177,7 +177,7 @@ jobs:
       - name: Install Poetry
         shell: bash
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
+          curl -sSL https://install.python-poetry.org | python -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Set project version with Poetry
