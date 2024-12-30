@@ -164,7 +164,7 @@ jobs:
           fi
 
   pypi-build:
-    needs: [ pypi-check, release]
+    needs: [ pypi-check, release, details]
     runs-on: ${{ vars.OS }}
     steps:
       - uses: actions/checkout@v4
