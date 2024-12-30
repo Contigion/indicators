@@ -122,7 +122,7 @@ jobs:
 
   release:
     runs-on: ${{ vars.OS }}
-    needs: [ tag, details ]
+    needs: [ tag, details, changelog, pypi-publish ]
     steps:
       - name: Create Release
         uses: actions/create-release@v1
