@@ -105,7 +105,7 @@ jobs:
 
   tag:
     runs-on: ${{ vars.OS }}
-    needs: [ details, pypi-check, changelog ]
+    needs: [ details, pypi-build, changelog ]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -164,7 +164,7 @@ jobs:
           fi
 
   pypi-build:
-    needs: [ release, details]
+    needs: [ pypi-check, details]
     runs-on: ${{ vars.OS }}
     steps:
       - uses: actions/checkout@v4
@@ -183,15 +183,19 @@ jobs:
       - name: Set project version with Poetry
         shell: bash
         run: |
+          export PATH="$HOME/.local/bin:$PATH"
           poetry version ${{ needs.details.outputs.new_version }}
 
       - name: Install dependencies
         shell: bash
-        run: poetry install --sync --no-interaction
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          poetry install --sync --no-interaction
 
       - name: Build source and wheel distribution
         shell: bash
         run: |
+          export PATH="$HOME/.local/bin:$PATH"
           poetry build
 
       - name: Upload artifacts
