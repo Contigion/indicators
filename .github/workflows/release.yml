@@ -3,8 +3,8 @@ name: Release
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'src/**'
+#    paths:
+#      - 'src/**'
 
 env:
   PACKAGE_NAME: "indicators"
