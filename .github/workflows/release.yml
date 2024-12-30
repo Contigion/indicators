@@ -202,6 +202,8 @@ jobs:
     runs-on: ${{ vars.UBUNTU }}
     environment:
       name: release
+    permissions:
+      id-token: write
     env:
       PY_PI_TOKEN: ${{ secrets.PY_PI_TOKEN_CONTIGION_INDICATORS }}
     steps:
