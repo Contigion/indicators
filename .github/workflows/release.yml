@@ -28,6 +28,7 @@ jobs:
           pip install pylint
 
       - name: Run pylint
+        shell: bash
         run: |
           pylint --max-line-length=120 --disable=missing-module-docstring,missing-function-docstring,invalid-name,broad-exception-caught,broad-exception-raised,raise-missing-from $(git ls-files '*.py')
 
@@ -81,6 +82,7 @@ jobs:
           node-version: ${{ vars.NODE_VERSION }}
 
       - name: Install conventional-changelog-cli
+        shell: bash
         run: npm install -g conventional-changelog-cli
 
       - name: Checkout Code
@@ -103,7 +105,7 @@ jobs:
 
   tag:
     runs-on: ${{ vars.OS }}
-    needs: changelog
+    needs: [ pypi-check, changelog ]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -133,11 +135,12 @@ jobs:
           draft: false
           prerelease: false
 
-  pypi_check:
+  pypi-check:
     needs: details
     runs-on: ${{ vars.OS }}
     steps:
       - name: Fetch information from PyPI
+        shell: bash
         run: |
           response=$(curl -s https://pypi.org/pypi/${{ env.PACKAGE_NAME }}/json || echo "{}")
           latest_previous_version=$(echo $response | jq --raw-output "select(.releases != null) | .releases | keys_unsorted | last")
@@ -149,6 +152,7 @@ jobs:
           echo "latest_previous_version=$latest_previous_version" >> $GITHUB_ENV
 
       - name: Compare versions and exit if not newer
+        shell: bash
         run: |
           NEW_VERSION=${{ needs.details.outputs.new_version }}
           LATEST_VERSION=$latest_previous_version
@@ -159,8 +163,8 @@ jobs:
             echo "The new version $NEW_VERSION is greater than the latest version $LATEST_VERSION on PyPI."
           fi
 
-  pypi_build:
-    needs: [ pypi_check, release]
+  pypi-build:
+    needs: [ pypi-check, release]
     runs-on: ${{ vars.OS }}
     steps:
       - uses: actions/checkout@v4
@@ -196,9 +200,9 @@ jobs:
           name: dist
           path: dist/
 
-  pypi_publish:
+  pypi-publish:
     name: Upload release to PyPI
-    needs: pypi_build
+    needs: pypi-build
     runs-on: ${{ vars.OS }}
     environment:
       name: release
