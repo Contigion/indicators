@@ -43,6 +43,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Extract tag and Details
         id: release
+        shell: bash
         run: |
           PR_BRANCH=$(curl -s \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
@@ -73,7 +74,7 @@ jobs:
 
   changelog:
     runs-on: ${{ vars.OS }}
-    needs: pylint
+    needs: [ pylint, details ]
     steps:
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -120,7 +121,7 @@ jobs:
 
   release:
     runs-on: ${{ vars.OS }}
-    needs: [ changelog, tag ]
+    needs: tag
     steps:
       - name: Create Release
         uses: actions/create-release@v1
@@ -134,7 +135,7 @@ jobs:
           prerelease: false
 
   pypi_check:
-    needs: [ details, release ]
+    needs: details
     runs-on: ${{ vars.OS }}
     steps:
       - name: Fetch information from PyPI
@@ -160,7 +161,7 @@ jobs:
           fi
 
   pypi_build:
-    needs: pypi_check
+    needs: [ pypi_check, release]
     runs-on: ${{ vars.OS }}
     steps:
       - uses: actions/checkout@v4
