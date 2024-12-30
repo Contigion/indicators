@@ -9,7 +9,6 @@ on:
 env:
   PACKAGE_NAME: "indicators"
   OWNER: "Contigion"
-  TAP_NAME: "<TAP_NAME>"
 
 jobs:
   pylint:
@@ -52,13 +51,14 @@ jobs:
 
           if [ -n "$PR_BRANCH" ]; then
             BRANCH_NAME=$(echo "$PR_BRANCH" | sed 's/refs\/heads\///' | sed 's/\//-/g')
+            echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           else
             echo "No merged branches found"
             exit 1
           fi
           
           if [ "${{ github.ref_type }}" = "tag" ]; then
-            TAG_NAME=${BRANCH_NAME}
+            TAG_NAME=${{ env.BRANCH_NAME }}
             NEW_VERSION=$(echo $TAG_NAME | awk -F'-' '{print $1}')
             SUFFIX=$(echo $TAG_NAME | grep -oP '[a-z]+[0-9]+' || echo "")
             echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
