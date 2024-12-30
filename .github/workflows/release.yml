@@ -74,7 +74,7 @@ jobs:
 
   changelog:
     runs-on: ${{ vars.OS }}
-    needs: [ pylint, details ]
+    needs: pylint
     steps:
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -164,7 +164,7 @@ jobs:
           fi
 
   pypi-build:
-    needs: [ pypi-check, release, details]
+    needs: [ release, details]
     runs-on: ${{ vars.OS }}
     steps:
       - uses: actions/checkout@v4
