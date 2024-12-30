@@ -105,7 +105,7 @@ jobs:
 
   tag:
     runs-on: ${{ vars.OS }}
-    needs: [ pypi-check, changelog ]
+    needs: [ details, pypi-check, changelog ]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -122,7 +122,7 @@ jobs:
 
   release:
     runs-on: ${{ vars.OS }}
-    needs: tag
+    needs: [ tag, details ]
     steps:
       - name: Create Release
         uses: actions/create-release@v1
@@ -164,7 +164,7 @@ jobs:
           fi
 
   pypi-build:
-    needs: [ pypi-check, release]
+    needs: [ pypi-check, release, details]
     runs-on: ${{ vars.OS }}
     steps:
       - uses: actions/checkout@v4
