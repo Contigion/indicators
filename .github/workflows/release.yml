@@ -39,8 +39,12 @@ jobs:
       tag_name: ${{ steps.release.outputs.tag_name }}
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Extract tag and Details
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract tag name
         id: release
         shell: bash
         run: |
