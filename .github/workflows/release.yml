@@ -182,9 +182,6 @@ jobs:
       - name: Build a binary wheel and a source tarball
         run: python -m build
 
-      - name: List dist directory contents
-        run: ls -la dist/
-
       - name: Upload the distribution packages 📦
         uses: actions/upload-artifact@v4
         with:
@@ -209,3 +206,5 @@ jobs:
 
       - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PY_PI_TOKEN_CONTIGION_INDICATORS }}
