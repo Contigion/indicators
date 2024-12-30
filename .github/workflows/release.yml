@@ -7,7 +7,7 @@ on:
 #      - 'src/**'
 
 env:
-  PACKAGE_NAME: "indicators"
+  PACKAGE_NAME: "contigion-indicators"
   OWNER: "Contigion"
 
 jobs:
@@ -74,7 +74,7 @@ jobs:
 
   changelog:
     runs-on: ${{ vars.OS }}
-    needs: [ pylint, pypi-build]
+    needs: pylint
     steps:
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -105,7 +105,7 @@ jobs:
 
   tag:
     runs-on: ${{ vars.OS }}
-    needs: [ details, pypi-build, changelog ]
+    needs: [ details, pypi-publish, changelog ]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -198,7 +198,7 @@ jobs:
           path: dist/
 
   pypi-publish:
-    needs: [ pypi-build, details]
+    needs: [ pypi-check, pypi-build, details]
     runs-on: ${{ vars.UBUNTU }}
     environment:
       name: release
