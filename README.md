@@ -1,2 +1,2 @@
 # indicator-library
-A library for using indicators within the project
+A library for using forex indicators in the Contigion projects 
