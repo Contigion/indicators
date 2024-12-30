@@ -50,31 +50,26 @@ jobs:
         run: |
           PR_BRANCH=$(curl -s \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/pulls?state=closed | \
-            jq -r ".[] | select(.base.ref == \"main\" and .merged_at != null) | .head.ref" | head -n 1)
+            https://api.github.com/repos/${{ github.repository }}/pulls?state=closed \
+            | jq -r ".[] | select(.base.ref == \"main\" and .merged_at != null) | .head.ref" | head -n 1)
 
           if [ -n "$PR_BRANCH" ]; then
-            BRANCH_NAME=$(echo "$PR_BRANCH" | sed 's/refs\/heads\///' | sed 's/\//-/g')
-            echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+            echo "BRANCH_NAME=${BRANCH_NAME}"
           else
             echo "No merged branches found"
             exit 1
           fi
-          
-          if [ "${{ github.ref_type }}" = "tag" ]; then
-            TAG_NAME=${{ env.BRANCH_NAME }}
-            NEW_VERSION=$(echo $TAG_NAME | awk -F'-' '{print $1}')
-            SUFFIX=$(echo $TAG_NAME | grep -oP '[a-z]+[0-9]+' || echo "")
-            echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
-            echo "suffix=$SUFFIX" >> "$GITHUB_OUTPUT"
-            echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
-            echo "Version is $NEW_VERSION"
-            echo "Suffix is $SUFFIX"
-            echo "Tag name is $TAG_NAME"
-          else
-            echo "No tag found"
-            exit 1
-          fi
+
+          TAG_NAME=$PR_BRANCH
+          NEW_VERSION=$(echo $TAG_NAME | awk -F'-' '{print $1}')
+          SUFFIX=$(echo $TAG_NAME | grep -oP '[a-z]+[0-9]+' || echo "")
+          echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          echo "suffix=$SUFFIX" >> "$GITHUB_OUTPUT"
+          echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
+          echo "Version is $NEW_VERSION"
+          echo "Suffix is $SUFFIX"
+          echo "Tag name is $TAG_NAME"
+
 
   changelog:
     runs-on: ${{ vars.OS }}
