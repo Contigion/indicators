@@ -16,11 +16,11 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Set package version
-        run: |
-          echo "__version__ = '${{ env.VERSION_NAME }}'" > src/indicators/__init__.py
-        env:
-          VERSION_NAME: 0.0.0
+      - name: Install build tools
+        run: pip install build
+
+      - name: Build package
+        run: python -m build
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
