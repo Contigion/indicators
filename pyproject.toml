@@ -7,7 +7,7 @@ name = "indicators"
 version = "0.0.0"  # This will be dynamically updated
 description = "A library for using forex indicators in the Contigion projects"
 authors = [
-    { name = "Contigion", email = "" }
+    { name = "Contigion", email = "contigion@gmail.com" }
 ]
 readme = "README.md"
 dependencies = [
