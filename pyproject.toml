@@ -6,10 +6,12 @@ build-backend = "setuptools.build_meta"
 name = "indicators"
 version = "0.0.0"  # This will be dynamically updated
 description = "A library for using forex indicators in the Contigion projects"
-authors = ["Contigion"]
+authors = [
+    { name = "Contigion", email = "" }
+]
 readme = "README.md"
 dependencies = [
-    "numpy>=1.21.0",  # Add your dependencies here
+    "numpy>=1.21.0", # Add your dependencies here
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
