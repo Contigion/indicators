@@ -1,0 +1,29 @@
+name: Publish to PyPI
+
+on:
+  push:
+    branches:
+      - *
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Set package version
+        run: |
+          echo "__version__ = '${{ env.VERSION_NAME }}'" > src/indicators/__init__.py
+        env:
+          VERSION_NAME: 0.0.0
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PY_PI_TOKEN_CONTIGION_INDICATORS }}
