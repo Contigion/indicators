@@ -3,7 +3,7 @@ from util.indicator_utils import indicator_input_validation, indicator_output_va
 from util.functions import get_dataframe_size
 
 
-def rsi(data, period=7, overbought=70, oversold=30):
+def get_rsi_data(data, period):
     result = data.copy(deep=True)
     required_columns = ['close']
     min_rows = period
@@ -11,8 +11,13 @@ def rsi(data, period=7, overbought=70, oversold=30):
     indicator_input_validation(data, required_columns, min_rows)
     rsi_data = result.ta.rsi(period)
     indicator_output_validation(rsi_data)
-
     result['rsi'] = rsi_data
+
+    return result
+
+
+def rsi(data, period=7, overbought=70, oversold=30):
+    result = get_rsi_data(data, period)
     result['prev_rsi'] = result['rsi'].shift(1)
 
     # Generate buy/sell signals
@@ -32,15 +37,7 @@ def rsi(data, period=7, overbought=70, oversold=30):
 
 
 def rsi_over_bought_sold(data, period=7, overbought=70, oversold=30):
-    result = data.copy(deep=True)
-    required_columns = ['close']
-    min_rows = period
-
-    indicator_input_validation(data, required_columns, min_rows)
-    rsi_data = result.ta.rsi(period)
-    indicator_output_validation(rsi_data)
-
-    result['rsi'] = rsi_data
+    result = get_rsi_data(data, period)
 
     # Generate buy/sell signals
     result['signal'] = None
@@ -51,15 +48,8 @@ def rsi_over_bought_sold(data, period=7, overbought=70, oversold=30):
 
 
 def rsi_mavg(data, period=7, mavg=14):
-    result = data.copy(deep=True)
-    required_columns = ['close']
-    min_rows = max(period, mavg)
+    result = get_rsi_data(data, period)
 
-    indicator_input_validation(data, required_columns, min_rows)
-    rsi_data = result.ta.rsi(period)
-    indicator_output_validation(rsi_data)
-
-    result['rsi'] = rsi_data
     result['prev_rsi'] = result['rsi'].shift(1)
     result['mavg'] = result['rsi'].rolling(mavg).mean()
     result['prev_mavg'] = result['mavg'].shift(1)

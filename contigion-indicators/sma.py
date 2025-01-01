@@ -38,8 +38,8 @@ def sma_crossover(data, fast=5, slow=13):
 
 def sma_trend_direction(data, period=200):
     result = data.copy(deep=True)
-    required_columns = ['close']
     min_rows = period
+    required_columns = ['close']
 
     indicator_input_validation(data, required_columns, min_rows)
     sma = result.ta.sma(period)
