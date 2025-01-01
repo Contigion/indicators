@@ -1,6 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # pylint: disable=unused-import
-from indicator_utils import indicator_input_validation, indicator_output_validation
+from util.indicator_utils import indicator_input_validation, indicator_output_validation
 from util.functions import get_dataframe_size
 
 

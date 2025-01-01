@@ -1,6 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # pylint: disable=unused-import
-from indicator_utils import indicator_input_validation, indicator_output_validation
+from util.indicator_utils import indicator_input_validation, indicator_output_validation
 from util.functions import get_dataframe_size
 
 
@@ -43,9 +42,7 @@ def sma_trend_direction(data, period=200):
     min_rows = period
 
     indicator_input_validation(data, required_columns, min_rows)
-
     sma = result.ta.sma(period)
-
     indicator_output_validation(sma)
 
     # Add SMAs

@@ -1,4 +1,4 @@
-from MetaTrader5 import symbol_info
+from MetaTrader5 import symbol_info # pylint: disable=no-name-in-module
 
 
 def get_point(symbol):

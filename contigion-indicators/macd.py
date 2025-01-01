@@ -1,6 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # pylint: disable=unused-import
-from indicator_utils import indicator_input_validation, indicator_output_validation
+from util.indicator_utils import indicator_input_validation, indicator_output_validation
 from util.functions import get_dataframe_size
 
 
@@ -10,9 +9,7 @@ def macd_crossover(data, fast=12, slow=26, signal=9):
     min_rows = max(fast, slow, signal)
 
     indicator_input_validation(data, required_columns, min_rows)
-
     macd = result.ta.macd(fast=fast, slow=slow, signal=signal)
-
     indicator_output_validation(macd)
 
     result[['macd', 'histogram', 'signal_line']] = macd

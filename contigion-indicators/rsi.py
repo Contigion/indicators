@@ -1,6 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # pylint: disable=unused-import
-from indicator_utils import indicator_input_validation, indicator_output_validation
+from util.indicator_utils import indicator_input_validation, indicator_output_validation
 from util.functions import get_dataframe_size
 
 
@@ -10,9 +9,7 @@ def rsi(data, period=7, overbought=70, oversold=30):
     min_rows = period
 
     indicator_input_validation(data, required_columns, min_rows)
-
     rsi_data = result.ta.rsi(period)
-
     indicator_output_validation(rsi_data)
 
     result['rsi'] = rsi_data
@@ -41,7 +38,6 @@ def rsi_over_bought_sold(data, period=7, overbought=70, oversold=30):
 
     indicator_input_validation(data, required_columns, min_rows)
     rsi_data = result.ta.rsi(period)
-
     indicator_output_validation(rsi_data)
 
     result['rsi'] = rsi_data
@@ -61,7 +57,6 @@ def rsi_mavg(data, period=7, mavg=14):
 
     indicator_input_validation(data, required_columns, min_rows)
     rsi_data = result.ta.rsi(period)
-
     indicator_output_validation(rsi_data)
 
     result['rsi'] = rsi_data

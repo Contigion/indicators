@@ -1,6 +1,5 @@
 import pandas as pd
-import pandas_ta as ta  # pylint: disable=unused-import
-from indicator_utils import indicator_input_validation, indicator_output_validation
+from util.indicator_utils import indicator_input_validation, indicator_output_validation
 
 
 def psar_trend(data):
@@ -9,9 +8,7 @@ def psar_trend(data):
     min_rows = 0
 
     indicator_input_validation(data, required_columns, min_rows)
-
     psar = result.ta.psar()
-
     indicator_output_validation(psar)
 
     # Get PSAR values
