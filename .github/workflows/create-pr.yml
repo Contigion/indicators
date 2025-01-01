@@ -2,23 +2,27 @@ name: Create Pull Requests to Main
 
 on:
   push:
-    branches: [ "[0-9]+.[0-9]+.[0-9]+" ]
+    branches: [ "[0-9]+.[0-9]+.[0-9]+", "release/**" ]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   create-pr:
+    name: Create Pull Request
     runs-on: ${{ vars.OS }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Get branch name
-        id: branch_name
         shell: bash
         run: |
           BRANCH_NAME=$(echo "${GITHUB_REF}" | sed 's/refs\/heads\///')
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
       - name: Check if PR exists
-        id: pr_check
         shell: bash
         run: |
           PR_EXISTS=$(gh pr list --state open --head "${{ env.BRANCH_NAME }}" --json number -q '.[].number')
@@ -29,45 +33,36 @@ jobs:
             echo "PR already exists, skipping creation."
             echo "PR_EXISTS=true" >> $GITHUB_ENV
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Git
-        if: env.PR_EXISTS == 'false'
-        shell: bash
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
 
       - name: Create Pull Request to main
         if: env.PR_EXISTS == 'false'
         shell: bash
         run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          
           PR_TITLE="Merge ${{ env.BRANCH_NAME }} into main"
           gh pr create --base main --head "${{ env.BRANCH_NAME }}" --title "$PR_TITLE" --body "This PR is automatically created from the release branch to the main branch."
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   pylint:
-    runs-on: ${{ vars.OS }}
+    name: Pylint
     needs: create-pr
+    runs-on: ${{ vars.OS }}
+
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python ${{ vars.PYTHON_VERSION }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
 
-      - name: Install dependencies
-        shell: bash
+      - name: Install pylint
         run: |
           python -m pip install --upgrade pip
           pip install pylint
 
-      - name: Run pylint
+      - name: Analyse code
         run: |
           pylint --max-line-length=120 --disable=missing-module-docstring,missing-function-docstring,invalid-name,broad-exception-caught,broad-exception-raised,raise-missing-from $(git ls-files '*.py')

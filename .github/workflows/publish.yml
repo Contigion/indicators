@@ -1,10 +1,10 @@
-name: Release
+name: Publish to PyPI
 
 on:
   push:
     branches: [ main ]
-#    paths:
-#      - 'src/**'
+    paths:
+      - "contigion-indicators/**"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -13,41 +13,44 @@ env:
 
 jobs:
   pylint:
+    name: Pylint
     runs-on: ${{ vars.OS }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ vars.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
 
-      - name: Install dependencies
-        shell: bash
+      - name: Install pylint
         run: |
           python -m pip install --upgrade pip
           pip install pylint
 
-      - name: Run pylint
-        shell: bash
+      - name: Analyse code
         run: |
           pylint --max-line-length=120 --disable=missing-module-docstring,missing-function-docstring,invalid-name,broad-exception-caught,broad-exception-raised,raise-missing-from $(git ls-files '*.py')
 
   details:
+    name: Get Details for Future Jobs
     runs-on: ${{ vars.OS }}
+
     outputs:
-      new_version: ${{ steps.release.outputs.new_version }}
-      suffix: ${{ steps.release.outputs.suffix }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
+      new_version: ${{ steps.values.outputs.new_version }}
+      suffix: ${{ steps.values.outputs.suffix }}
+      tag_name: ${{ steps.values.outputs.tag_name }}
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Extract tag name
-        id: release
+        id: values
         shell: bash
         run: |
           PR_BRANCH=$(curl -s \
@@ -72,73 +75,11 @@ jobs:
           echo "Suffix is $SUFFIX"
           echo "Tag name is $TAG_NAME"
 
-
-  changelog:
-    runs-on: ${{ vars.OS }}
-    needs: pylint
-    steps:
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ vars.NODE_VERSION }}
-
-      - name: Install conventional-changelog-cli
-        shell: bash
-        run: npm install -g conventional-changelog-cli
-
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Generate changelog
-        id: changelog
-        shell: bash
-        run: |
-          conventional-changelog -p angular -n ./changelog_config.js > CHANGELOG_TEMP.md
-          if [[ -s CHANGELOG_TEMP.md ]]; then
-            cat CHANGELOG_TEMP.md > CHANGELOG.md
-            CHANGES_CONTENT=$(cat CHANGELOG.md)
-            echo -e "CONTENT<<EOF\n$CHANGES_CONTENT\nEOF" >> $GITHUB_ENV
-          else
-            echo "CONTENT=No changes for changelog" >> $GITHUB_ENV
-          fi 
-
-  tag:
-    runs-on: ${{ vars.OS }}
-    needs: [ details, pypi-publish, changelog ]
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Create tag
-        shell: bash
-        run: |
-          git config --local user.name 'GitHub Actions Bot'
-          git config --local user.email 'actions@github.com'
-          git tag ${{ needs.details.outputs.tag_name }}
-          git push --tags
-
-  release:
-    runs-on: ${{ vars.OS }}
-    needs: [ tag, details ]
-    steps:
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ needs.details.outputs.tag_name }}
-          release_name: ${{ needs.details.outputs.tag_name }}
-          body: ${{ env.CONTENT }}
-          draft: false
-          prerelease: false
-
-  pypi-check:
+  check-version:
+    name: Check Last Published Version
     needs: details
     runs-on: ${{ vars.OS }}
+
     steps:
       - name: Fetch information from PyPI
         shell: bash
@@ -164,47 +105,108 @@ jobs:
             echo "The new version $NEW_VERSION is greater than the latest version $LATEST_VERSION on PyPI."
           fi
 
-  pypi-build:
-    needs: [ pypi-check, details ]
+  publish:
+    name: Publish to PyPi
+    needs: [ check-version, details]
     runs-on: ${{ vars.UBUNTU }}
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/${{ env.PACKAGE_NAME }}
+
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ vars.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
 
-      - name: Install pypa/build
-        run: python -m pip install --upgrade pip build --user
+      - name: Install build tools
+        run: pip install build
 
-      - name: Build a binary wheel and a source tarball
+      - name: Update version in pyproject.toml
+        run: |
+          if ! [[ "${{ needs.details.outputs.tag_name }}" =~ ^[0-9]+(\.[0-9]+)*([a-zA-Z0-9.-]+)?$ ]]; then
+            echo "Invalid version: ${{ needs.details.outputs.tag_name }}"
+            exit 1
+          fi
+          
+          sed -i "s/^version = \".*\"/version = \"${{ needs.details.outputs.tag_name }}\"/" pyproject.toml
+
+      - name: Build package
         run: python -m build
 
-      - name: Upload the distribution packages 📦
-        uses: actions/upload-artifact@v4
-        with:
-          name: python-package-distributions
-          path: dist/
-          if-no-files-found: error
-
-  pypi-publish:
-    needs: [ pypi-check, pypi-build, details ]
-    runs-on: ${{ vars.UBUNTU }}
-    environment:
-      name: release
-      url: https://pypi.org/p/${{ env.PACKAGE_NAME }}
-
-    permissions:
-      id-token: write
-    steps:
-      - name: Download the distribution packages 📦
-        uses: actions/download-artifact@v4
-        with:
-          name: python-package-distributions
-          path: dist/
-
-      - name: Publish distribution to PyPI
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  changelog:
+    name: Generate Changelog
+    runs-on: ${{ vars.OS }}
+    needs: [ pylint, publish ]
+
+    steps:
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Install conventional-changelog-cli
+        run: npm install -g conventional-changelog-cli
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        id: changelog
+        shell: bash
+        run: |
+          conventional-changelog -p angular -n ./changelog_config.js > CHANGELOG_TEMP.md
+          if [[ -s CHANGELOG_TEMP.md ]]; then
+            cat CHANGELOG_TEMP.md > CHANGELOG.md
+            CHANGES_CONTENT=$(cat CHANGELOG.md)
+            echo -e "CONTENT<<EOF\n$CHANGES_CONTENT\nEOF" >> $GITHUB_ENV
+          else
+            echo "CONTENT=No changes for changelog" >> $GITHUB_ENV
+          fi 
+
+  tag:
+    name: Create Tag
+    needs: [ changelog, details ]
+    runs-on: ${{ vars.OS }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create tag
+        shell: bash
+        run: |
+          git config --local user.name 'GitHub Actions Bot'
+          git config --local user.email 'actions@github.com'
+          git tag ${{ needs.details.outputs.tag_name }}
+          git push --tags
+
+  release:
+    name:  Create Release
+    needs: [ tag, details ]
+    runs-on: ${{ vars.OS }}
+
+    steps:
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.details.outputs.tag_name }}
+          release_name: ${{ needs.details.outputs.tag_name }}
+          body: ${{ env.CONTENT }}
+          draft: false
+          prerelease: false
