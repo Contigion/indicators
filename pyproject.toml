@@ -17,4 +17,4 @@ classifiers = [
 ]
 
 [tool.setuptools]
-packages = ["contigion-indicators"]
+packages = ["contigion_indicators"]
