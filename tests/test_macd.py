@@ -1,7 +1,6 @@
 import pytest
-import MetaTrader5 as mt5
 from contigion_indicators.macd import *
-from contigion_indicators.util import get_dataframe_size
+from contigion_indicators.util.functions import get_dataframe_size
 from contigion_indicators.util.metatrader import get_market_data, connect
 
 
