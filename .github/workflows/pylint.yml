@@ -4,12 +4,12 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "contigion-indicators/**"
+      - "contigion_indicators/**"
 
   pull_request:
     branches: [ main, "[0-9]+.[0-9]+.[0-9]+" ]
     paths:
-      - "contigion-indicators/**"
+      - "contigion_indicators/**"
 
 jobs:
   build:
@@ -25,11 +25,14 @@ jobs:
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
 
-      - name: Install pylint
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pylint
           pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest
 
       - name: Analyse code
         run: |

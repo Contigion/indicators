@@ -3,3 +3,4 @@ pandas_ta
 numpy
 pandas
 MetaTrader5
+pytest
