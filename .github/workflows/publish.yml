@@ -7,7 +7,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  PACKAGE_NAME: "contigion-indicators"
+  PACKAGE_NAME: "contigion_indicators"
   OWNER: "Contigion"
 
 jobs:
@@ -171,7 +171,7 @@ jobs:
   changelog:
     name: Generate Changelog
     runs-on: ${{ vars.OS }}
-    needs: [ pylint, pytest, publish ]
+    needs: [ pylint, publish ]
 
     steps:
       - name: Install Node.js
