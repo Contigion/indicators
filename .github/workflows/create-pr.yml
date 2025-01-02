@@ -46,6 +46,7 @@ jobs:
 
   pylint:
     name: Pylint
+    needs: create-pr
     runs-on: ${{ vars.OS }}
 
     steps:

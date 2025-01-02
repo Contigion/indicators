@@ -3,13 +3,11 @@ name: Pylint
 on:
   push:
     branches: [ main ]
-    paths:
-      - "contigion_indicators/**"
+    paths: [ "contigion_indicators/**", "tests/**" ]
 
   pull_request:
     branches: [ main, "[0-9]+.[0-9]+.[0-9]+" ]
-    paths:
-      - "contigion_indicators/**"
+    paths: [ "contigion_indicators/**", "tests/**" ]
 
 jobs:
   pylint:
