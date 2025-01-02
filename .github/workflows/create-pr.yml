@@ -73,7 +73,7 @@ jobs:
 
   pytest:
     name: Pytest
-    needs: pylint
+    needs: create-pr
     runs-on: ${{ vars.OS }}
 
     steps:

@@ -37,7 +37,6 @@ jobs:
 
   pytest:
     name: Pytest
-    needs: pylint
     runs-on: ${{ vars.OS }}
 
     steps:

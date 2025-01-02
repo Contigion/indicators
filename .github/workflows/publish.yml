@@ -40,7 +40,6 @@ jobs:
 
   pytest:
     name: Pytest
-    needs: pylint
     runs-on: ${{ vars.OS }}
 
     steps:
@@ -135,7 +134,7 @@ jobs:
 
   publish:
     name: Publish to PyPi
-    needs: [ check-version, details, pytest]
+    needs: [ check-version, details, pytest, pylint]
     runs-on: ${{ vars.UBUNTU }}
 
     environment:
@@ -176,7 +175,7 @@ jobs:
   changelog:
     name: Generate Changelog
     runs-on: ${{ vars.OS }}
-    needs: [ pytest, publish ]
+    needs: [ pylint, pytest, publish ]
 
     steps:
       - name: Install Node.js
