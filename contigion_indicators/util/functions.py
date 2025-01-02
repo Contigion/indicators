@@ -15,27 +15,48 @@ def get_dataframe_size(dataframe):
     return dataframe.shape[0]
 
 
-def validate_input(data, required_columns=[], minimum_input=[]):
+def validate_input(data, required_columns=None, numeric_fields=None):
+    """
+    Validates the input DataFrame for required conditions.
+
+    Args:
+        data (pd.DataFrame): The input DataFrame to validate.
+        required_columns (list, optional): List of column names that must be present in the DataFrame.
+        numeric_fields (list, optional): Minimum number of rows expected in the DataFrame.
+
+    Raises:
+        ValueError: If the DataFrame is None.
+        ValueError: If any required column is missing.
+        ValueError: If the DataFrame has fewer rows than the specified minimum.
+    """
+
     data_size = get_dataframe_size(data)
 
-    # Check if data is None
     if data is None:
-        raise ValueError("The input DataFrame is None.")
+        raise ValueError("The input DataFrame cannot be None.")
 
-    # Check for the presence of each required column
-    for column in required_columns:
-        if column not in data.columns:
-            raise ValueError(
-                f"There are missing required columns in the DataFrame. Missing column: {column}.")
+    if required_columns:
+        missing_columns = [col for col in required_columns if col not in data.columns]
+        if missing_columns:
+            raise ValueError(f"There are missing required columns in the DataFrame: {', '.join(missing_columns)}.")
 
     # Check if the DataFrame has at least the minimum number of rows
-    if minimum_input:
-        minimum_rows = max(minimum_input)
+    if numeric_fields:
+        minimum_rows = max(numeric_fields)
         if minimum_rows > data_size:
             raise ValueError(
                 f"There aren't enough rows in the input DataFrame. Expected at least {minimum_rows}, got {data_size}.")
 
 
 def validate_output(data):
+    """
+    Validates the output DataFrame.
+
+    Args:
+        data (pd.DataFrame): The output DataFrame to validate.
+
+    Raises:
+        ValueError: If the DataFrame is None.
+    """
     if data is None:
-        raise ValueError("The output DataFrame is None.")
+        raise ValueError("The output DataFrame cannot be None.")
