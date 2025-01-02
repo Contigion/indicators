@@ -1,5 +1,5 @@
 import pytest  # pylint: disable=unused-import
-from contigion_indicators.sma import *
+from contigion_indicators.sma import sma_crossover, sma_trend_direction
 from contigion_indicators.util.functions import get_dataframe_size
 from contigion_indicators.util.metatrader import get_market_data, connect
 
