@@ -6,4 +6,4 @@ from .setup import data, n_candles
 
 def test_psar_trend():
     sma_data = psar_trend(data)
-    assert (get_dataframe_size(sma_data) == n_candles)
+    assert get_dataframe_size(sma_data) == n_candles
