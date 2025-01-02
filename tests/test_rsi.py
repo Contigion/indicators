@@ -1,4 +1,4 @@
-import pytest
+import pytest  # pylint: disable=unused-import
 from contigion_indicators.rsi import *
 from contigion_indicators.util.functions import get_dataframe_size
 from contigion_indicators.util.metatrader import get_market_data, connect
