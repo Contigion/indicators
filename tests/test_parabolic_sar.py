@@ -7,7 +7,7 @@ from contigion_indicators.util.functions import get_dataframe_size
 def test_psar_trend():
     n_candles = 500
 
-    data = pd.read_csv('data.csv')
+    data = pd.read_csv('resources/data.csv')
     sma_data = psar_trend(data)
 
     assert (get_dataframe_size(sma_data) == (n_candles - 1))
