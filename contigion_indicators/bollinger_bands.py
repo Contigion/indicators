@@ -23,7 +23,7 @@ def get_bb_data(data, period, std_dev):
 def bollinger_bands(data, period=5, std_dev=2):
     result = get_bb_data(data, period, std_dev)
 
-    # Generate buy/sell signals
+    # Generate buy / sell signals
     close_mavg = zip(result['close'], result['mavg'])
     result['signal'] = [
         'buy' if (close > mavg) else
