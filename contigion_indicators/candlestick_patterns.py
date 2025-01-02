@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sma import sma_trend_direction
+from .sma import sma_trend_direction
 
 CANDLESTICK_PATTERNS = ['bull-spinning-top', 'bear-spinning-top', 'bull-marubozu', 'bear-marubozu', 'doji', 'hammer',
                         'hanging-man', 'inverted-hammer', 'shooting-star', 'tweezer-tops', 'tweezer-bottoms',
