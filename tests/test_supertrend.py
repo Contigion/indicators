@@ -1,8 +1,8 @@
+import os
 import pytest  # pylint: disable=unused-import
+import pandas as pd
 from contigion_indicators.supertrend import supertrend, supertrend_direction
 from contigion_indicators.util.functions import get_dataframe_size
-import pandas as pd
-import os
 
 current_dir = os.path.dirname(__file__)
 csv_path = os.path.join(current_dir, "resources", "data.csv")
