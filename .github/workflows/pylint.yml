@@ -29,6 +29,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pylint
+          pip install -r requirements.txt
 
       - name: Analyse code
         run: |
@@ -52,6 +53,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pytest
+          pip install -r requirements.txt
 
       - name: Run tests
         run: pytest
