@@ -1,14 +1,13 @@
 import pytest  # pylint: disable=unused-import
 from contigion_indicators.parabolic_sar import psar_trend
 from contigion_indicators.util.functions import get_dataframe_size
-from contigion_indicators.util.metatrader import get_market_data, connect
+import pandas as pd
 
 
 def test_psar_trend():
     n_candles = 500
 
-    connect()
-    data = get_market_data(number_of_candles=n_candles)
+    data = pd.read_csv('resources/data.csv')
     sma_data = psar_trend(data)
 
     assert (get_dataframe_size(sma_data) == (n_candles - 1))

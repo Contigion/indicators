@@ -1,7 +1,7 @@
 import pytest  # pylint: disable=unused-import
 from contigion_indicators.sma import sma_crossover, sma_trend_direction
 from contigion_indicators.util.functions import get_dataframe_size
-from contigion_indicators.util.metatrader import get_market_data, connect
+import pandas as pd
 
 
 def test_sma_crossover():
@@ -9,8 +9,7 @@ def test_sma_crossover():
     fast = 5
     slow = 13
 
-    connect()
-    data = get_market_data(number_of_candles=n_candles)
+    data = pd.read_csv('resources/data.csv')
     sma_data = sma_crossover(data, fast, slow).drop(columns=['signal']).dropna(inplace=False)
 
     assert (get_dataframe_size(sma_data) == (n_candles - slow))
@@ -20,8 +19,7 @@ def test_sma_trend():
     n_candles = 500
     period = 200
 
-    connect()
-    data = get_market_data(number_of_candles=n_candles)
+    data = pd.read_csv('resources/data.csv')
     sma_data = sma_trend_direction(data, period).drop(columns=['signal']).dropna(inplace=False)
 
     assert (get_dataframe_size(sma_data) == (n_candles - period))
