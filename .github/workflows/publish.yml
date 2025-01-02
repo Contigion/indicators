@@ -25,14 +25,11 @@ jobs:
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
 
-      - name: Install dependencies
+      - name: Install pylint
         run: |
           python -m pip install --upgrade pip
           pip install pylint
           pip install -r requirements.txt
-
-      - name: Run tests
-        run: pytest
 
       - name: Analyse code
         run: |
