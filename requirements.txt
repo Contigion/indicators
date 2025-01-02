@@ -1,6 +1,6 @@
 pandas
 pandas_ta
-numpy
+numpy==1.26.4
 pandas
 MetaTrader5
 pytest
