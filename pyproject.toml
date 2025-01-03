@@ -10,7 +10,12 @@ authors = [
     { name = "Contigion", email = "contigion@gmail.com" }
 ]
 readme = "README.md"
-dependencies = { file = [ "requirements.txt" ] }
+dependencies = [
+    "pandas",
+    "pandas_ta",
+    "numpy",
+    "MetaTrader5"
+]
 classifiers = [
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
