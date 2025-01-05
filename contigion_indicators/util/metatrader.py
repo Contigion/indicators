@@ -1,17 +1,4 @@
-import pandas as pd
-from MetaTrader5 import symbol_info, TIMEFRAME_M15, copy_rates_from_pos, initialize # pylint: disable=no-name-in-module
-
-
-def connect():
-    print("Connecting to MT5 ... \n")
-    connected = initialize()
-    retries = 0
-
-    while not connected:
-        print(f"Unable to establish MetaTrader5 connection. Retrying ({retries}) ... \n")
-        connected = initialize()
-
-    print("Successfully connected to MetaTrader 5. \n")
+from MetaTrader5 import symbol_info  # pylint: disable=no-name-in-module
 
 
 def get_point(symbol):
@@ -43,32 +30,3 @@ def get_point(symbol):
 
     except Exception:
         raise Exception("Error retrieving the point value")
-
-
-def get_market_data(symbol='USDJPY', timeframe=TIMEFRAME_M15, number_of_candles=500):
-    """Retrieve market data for a given symbol and timeframe.
-
-    Args:
-        symbol (str): The trading symbol.
-        timeframe (int): The timeframe value from MetaTrader.
-        number_of_candles (int): The number of candles to retrieve.
-
-    Returns:
-        DataFrame: A DataFrame containing the market data.
-
-    Raises:
-        RuntimeError: If data retrieval fails.
-    """
-    rates = copy_rates_from_pos(symbol, timeframe, 0, number_of_candles)
-
-    if rates is None:
-        raise RuntimeError(f"Failed to retrieve data for {symbol}.")
-
-    data = pd.DataFrame(rates)
-    data['time'] = pd.to_datetime(data['time'], unit='s')
-
-    # Remove the last row if it's an incomplete candle
-    if not data.empty:
-        data.drop(data.index[-1], inplace=True)
-
-    return data[['time', 'open', 'high', 'low', 'close', 'tick_volume']]
