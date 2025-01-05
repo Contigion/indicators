@@ -1,5 +1,5 @@
 import pandas_ta as ta  # pylint: disable=unused-import
-from util.functions import validate_input, validate_output
+from .util.functions import validate_input, validate_output
 
 
 def get_sma_data(data, fast=1, slow=1, period=1):

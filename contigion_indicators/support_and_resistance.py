@@ -1,5 +1,5 @@
 import numpy as np
-from util.metatrader import get_point
+from .util.metatrader import get_point
 
 
 def support_and_resistance(symbol, data, window=2, target=10):
