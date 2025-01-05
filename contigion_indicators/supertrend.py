@@ -1,5 +1,5 @@
 import pandas_ta as ta  # pylint: disable=unused-import
-from .util.functions import validate_input, validate_output
+from contigion_indicators.util.functions import validate_input, validate_output
 
 
 def get_supertrend_data(data, atr_length, multiplier, offset):
