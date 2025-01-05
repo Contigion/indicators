@@ -1,5 +1,5 @@
 from datetime import time
-import numpy as np
+from numpy import where
 
 # Sessions
 # USES SA TIME
@@ -36,11 +36,11 @@ def day_of_the_week(data):
     result['weekday'] = result['time'].dt.day_name()
 
     result[WEEKDAYS] = 0
-    result['monday'] = np.where(result.weekday == 'Monday', 1, 0)
-    result['tuesday'] = np.where(result.weekday == 'Tuesday', 1, 0)
-    result['wednesday'] = np.where(result.weekday == 'Wednesday', 1, 0)
-    result['thursday'] = np.where(result.weekday == 'Thursday', 1, 0)
-    result['friday'] = np.where(result.weekday == 'Friday', 1, 0)
+    result['monday'] = where(result.weekday == 'Monday', 1, 0)
+    result['tuesday'] = where(result.weekday == 'Tuesday', 1, 0)
+    result['wednesday'] = where(result.weekday == 'Wednesday', 1, 0)
+    result['thursday'] = where(result.weekday == 'Thursday', 1, 0)
+    result['friday'] = where(result.weekday == 'Friday', 1, 0)
 
     result.drop(columns=['weekday'], inplace=True)
 

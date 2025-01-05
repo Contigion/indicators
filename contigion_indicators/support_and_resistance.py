@@ -1,4 +1,4 @@
-import numpy as np
+from numpy import any, array, newaxis
 from .util.metatrader import get_point
 
 
@@ -6,11 +6,11 @@ def support_and_resistance(symbol, data, window=2, target=10):
     point = get_point(symbol)
     s_and_r, support, resistance = get_support_and_resistance_levels(data, window)
     close = s_and_r['close'].values
-    suport_levels = np.array(support['level'])
-    resistance_levels = np.array(resistance['level'])
+    suport_levels = array(support['level'])
+    resistance_levels = array(resistance['level'])
 
-    s_and_r['is_support_close'] = np.any(abs(close[:, np.newaxis] - suport_levels) < (target * point), axis=1)
-    s_and_r['is_resistance_close'] = np.any(abs(close[:, np.newaxis] - resistance_levels) < (target * point), axis=1)
+    s_and_r['is_support_close'] = any(abs(close[:, newaxis] - suport_levels) < (target * point), axis=1)
+    s_and_r['is_resistance_close'] = any(abs(close[:, newaxis] - resistance_levels) < (target * point), axis=1)
 
     return s_and_r
 
@@ -46,14 +46,14 @@ def get_support_and_resistance_levels(data, window=5):
     # Remove violated levels
     for index, row in support.iterrows():
         next_index = index + 1
-        is_level_broken = np.any(result.filter(items=['close']).loc[next_index:] < row.low)
+        is_level_broken = any(result.filter(items=['close']).loc[next_index:] < row.low)
 
         if is_level_broken:
             broken_support_indices.append(index)
 
     for index, row in resistance.iterrows():
         next_index = index + 1
-        is_level_broken = np.any(result.filter(items=['close']).loc[next_index:] > row.low)
+        is_level_broken = any(result.filter(items=['close']).loc[next_index:] > row.low)
 
         if is_level_broken:
             broken_resistance_indices.append(index)
