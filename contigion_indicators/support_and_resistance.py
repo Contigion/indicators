@@ -1,5 +1,5 @@
 from numpy import any as np_any, array, newaxis
-from .util.metatrader import get_point
+from contigion_indicators.util.metatrader import get_point
 
 
 def support_and_resistance(symbol, data, window=2, target=10):

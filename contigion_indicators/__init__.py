@@ -1,7 +1,6 @@
 __all__ = ["bollinger_bands", "candlestick_patterns", "macd", "parabolic_sar", "rsi", "sessions", "sma", "supertrend",
-           "support_and_resistance", "util"]
+           "support_and_resistance"]
 
-from . import util
 from .bollinger_bands import bollinger_bands
 from .candlestick_patterns import (candle_colour, candle_body_info, multi_candlestick_info, triple_candlestick_pattern,
                                    candlestick_type, single_candlestick_pattern, dual_candlestick_pattern, candle_size,
