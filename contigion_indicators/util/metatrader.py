@@ -24,9 +24,11 @@ def get_point(symbol):
         info = symbol_info(symbol)
 
         if info is None:
-            raise RuntimeError(f"Failed to retrieve information for symbol: {symbol}")
+            raise RuntimeError(f"{__file__}: {get_point.__name__}\n"
+                               f"Failed to retrieve information for symbol: {symbol}")
 
         return info.point
 
     except Exception:
-        raise Exception("Error retrieving the point value")
+        raise Exception(f"{__file__}: {get_point.__name__}\n"
+                        "Error retrieving the point value")
