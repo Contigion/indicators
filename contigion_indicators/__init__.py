@@ -12,3 +12,4 @@ from .rsi import rsi, rsi_mavg, rsi_over_bought_sold
 from .sessions import trading_session, day_of_the_week
 from .supertrend import supertrend, supertrend_direction
 from .support_and_resistance import support_and_resistance, get_support_and_resistance_levels
+from .sma import sma_crossover, sma_trend_direction
