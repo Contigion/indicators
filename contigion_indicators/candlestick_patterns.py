@@ -19,10 +19,9 @@ def get_trend(data):
 def candlestick_setup(data):
     result = candle_body_info(data)
     result['trend'] = get_trend(result)
-    # Output
     result['pattern'] = 'unknown'
     result['signal'] = None
-    
+
     return result
 
 
