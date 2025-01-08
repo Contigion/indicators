@@ -8,7 +8,7 @@ def get_supertrend_data(data, atr_length, multiplier, offset):
     validate_input(data, required_columns, periods)
 
     result = data.copy(deep=True)
-    supertrend_column = f"SUPERT_{atr_length}_{multiplier}.{offset}"
+    supertrend_column = f'SUPERT_{atr_length}_{multiplier}.{offset}'
     supertrend_data = result.ta.supertrend(atr_length, multiplier, offset)
 
     result['supertrend'] = supertrend_data[supertrend_column]
@@ -25,7 +25,7 @@ def supertrend(data, atr_length=7, multiplier=3, offset=0):
     return result
 
 
-def supertrend_direction(data, atr_length=7, multiplier=3, offset=0):
+def supertrend_trend(data, atr_length=7, multiplier=3, offset=0):
     result = get_supertrend_data(data, atr_length, multiplier, offset)
 
     # Generate buy/sell signals

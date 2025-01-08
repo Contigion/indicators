@@ -2,21 +2,19 @@ import pandas_ta as ta  # pylint: disable=unused-import
 from contigion_indicators.util.functions import validate_input, validate_output
 
 
-def get_psar_data(data):
+def psar(data):
     required_columns = ['close']
     validate_input(data, required_columns, [])
 
     result = data.copy(deep=True)
-    psar = result.ta.psar()
-    result['psar_up'] = psar['PSARs_0.02_0.2']
-    result['psar_down'] = psar['PSARl_0.02_0.2']
+    result[['psar_up', 'psar_down']] = result.ta.psar()[['PSARs_0.02_0.2', 'PSARl_0.02_0.2']]
 
     validate_output(result)
     return result
 
 
 def psar_trend(data):
-    result = get_psar_data(data)
+    result = psar(data)
 
     # Generate buy/sell signals
     result['signal'] = None
