@@ -1,8 +1,8 @@
 def candle_size(data, short=0.3, long=0.7):
     result = data.copy(deep=True)
 
-    result['body'] = abs(data['open'] - data['close'])
-    result['total_candle'] = abs(data['high'] - data['low'])
+    result['body'] = abs(result['open'] - result['close'])
+    result['total_candle'] = abs(result['high'] - result['low'])
 
     result['signal'] = None
     result.loc[(result['body'] / result['total_candle'] <= short), 'signal'] = 'small'
