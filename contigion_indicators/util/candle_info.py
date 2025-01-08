@@ -31,7 +31,7 @@ def candle_body_info(data, short=0.3, long=0.7):
     result['upper_wick'] = abs(result['high'] - result[['open', 'close']].max(axis=1))
     result['lower_wick'] = abs(result['low'] - result[['open', 'close']].min(axis=1))
     result['total_candle'] = abs(result['high'] - result['low'])
-    data['body_middle'] = abs(data['high'] + data['low']) / 2
+    result['body_middle'] = abs(result['high'] + result['low']) / 2
 
     result['body_size'] = result['body'] / result['total_candle']
     result['upper_wick_size'] = result['upper_wick'] / result['total_candle']
@@ -50,7 +50,9 @@ def candle_body_info(data, short=0.3, long=0.7):
     result['body_2'] = result['body'].shift(1)
     result['total_candle_1'] = result['total_candle'].shift(2)
     result['total_candle_2'] = result['total_candle'].shift(1)
-    data['body_middle_1'] = data['body_middle'].shift(2)
-    data['body_middle_2'] = data['body_middle'].shift(1)
+    result['body_middle_1'] = result['body_middle'].shift(2)
+    result['body_middle_2'] = result['body_middle'].shift(1)
+    result[['open_1', 'high_1', 'low_1', 'close_1']] = result[['open', 'high', 'low', 'close']].shift(2)
+    result[['open_2', 'high_2', 'low_2', 'close_2']] = result[['open', 'high', 'low', 'close']].shift(1)
 
     return result
