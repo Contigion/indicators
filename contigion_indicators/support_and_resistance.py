@@ -39,7 +39,7 @@ def support_and_resistance(data, window=5):
 
     for index, row in resistance.iterrows():
         next_index = index + 1
-        is_level_broken = np_any(result.filter(items=['close']).loc[next_index:] > row.low)
+        is_level_broken = np_any(result.filter(items=['close']).loc[next_index:] > row.high)
 
         if is_level_broken:
             broken_resistance_indices.append(index)
