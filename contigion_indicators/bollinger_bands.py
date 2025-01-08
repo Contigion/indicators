@@ -2,7 +2,7 @@ import pandas_ta as ta  # pylint: disable=unused-import
 from contigion_indicators.util.functions import validate_input, validate_output
 
 
-def get_bb_data(data, period, std_dev):
+def bollinger_bands(data, period, std_dev):
     required_columns = ['close']
     periods = [period]
     validate_input(data, required_columns, periods)
@@ -10,18 +10,17 @@ def get_bb_data(data, period, std_dev):
     result = data.copy(deep=True)
     bbands = result.ta.bbands(length=period, std=std_dev)
 
-    # Assign the Bollinger Bands to the result DataFrame
-    result['lower'] = bbands[f"BBL_{period}_{std_dev}.0"]
-    result['upper'] = bbands[f"BBU_{period}_{std_dev}.0"]
-    result['mavg'] = bbands[f"BBM_{period}_{std_dev}.0"]
+    # Assign the Bollinger Bands to the result
+    column_suffix = f'_{period}_{std_dev}.0'
+    result[['lower', 'upper', 'mavg']] = bbands[[f'BBL{column_suffix}', f'BBU{column_suffix}', f'BBM{column_suffix}']]
 
     validate_output(result)
 
     return result
 
 
-def bollinger_bands(data, period=5, std_dev=2):
-    result = get_bb_data(data, period, std_dev)
+def bollinger_bands_cross(data, period=5, std_dev=2):
+    result = bollinger_bands(data, period, std_dev)
 
     # Generate buy / sell signals
     close_mavg = zip(result['close'], result['mavg'])

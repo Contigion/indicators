@@ -1,5 +1,5 @@
 import pytest  # pylint: disable=unused-import
-from contigion_indicators.sma import sma_crossover, sma_trend_direction
+from contigion_indicators.sma import sma_crossover, sma_trend
 from contigion_indicators.util.functions import get_dataframe_size
 from .setup import data, n_candles
 
@@ -14,5 +14,5 @@ def test_sma_crossover():
 
 
 def test_sma_trend():
-    sma_data = sma_trend_direction(data, period).drop(columns=['signal']).dropna(inplace=False)
+    sma_data = sma_trend(data, period).drop(columns=['signal']).dropna(inplace=False)
     assert (get_dataframe_size(sma_data) == (n_candles - period + 1))

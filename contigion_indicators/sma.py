@@ -2,13 +2,24 @@ import pandas_ta as ta  # pylint: disable=unused-import
 from contigion_indicators.util.functions import validate_input, validate_output
 
 
-def get_sma_data(data, fast=1, slow=1, period=1):
+def sma(data, period):
     required_columns = ['close']
-    periods = [fast, slow, period]
+    periods = [period]
     validate_input(data, required_columns, periods)
 
     result = data.copy(deep=True)
     result['sma'] = result.ta.sma(period)
+
+    validate_output(result)
+    return result
+
+
+def get_sma_data(data, fast=1, slow=1):
+    required_columns = ['close']
+    periods = [fast, slow]
+    validate_input(data, required_columns, periods)
+
+    result = data.copy(deep=True)
     result['sma_slow'] = result.ta.sma(slow)
     result['sma_fast'] = result.ta.sma(fast)
 
@@ -31,14 +42,14 @@ def sma_crossover(data, fast=5, slow=13):
     ]
 
     # Drop intermediate columns
-    result.drop(columns=['prev_slow', 'prev_fast', 'sma'], inplace=True)
+    result.drop(columns=['prev_slow', 'prev_fast'], inplace=True)
     validate_output(result)
 
     return result
 
 
-def sma_trend_direction(data, period=200):
-    result = get_sma_data(data, period=period)
+def sma_trend(data, period=200):
+    result = sma(data, period=period)
 
     # Generate buy/sell signals
     result['trend_direction'] = None
@@ -48,7 +59,7 @@ def sma_trend_direction(data, period=200):
     result['signal'] = result['trend_direction'].shift(1)
 
     # Drop intermediate columns
-    result.drop(columns=['trend_direction', 'sma_slow', 'sma_fast'], inplace=True)
+    result.drop(columns=['trend_direction'], inplace=True)
     validate_output(result)
 
     return result

@@ -2,7 +2,7 @@ import pandas_ta as ta  # pylint: disable=unused-import
 from contigion_indicators.util.functions import validate_input, validate_output
 
 
-def get_rsi_data(data, period, mavg=14):
+def rsi(data, period, mavg=14):
     required_columns = ['close']
     periods = [period, mavg]
     validate_input(data, required_columns, periods)
@@ -14,8 +14,8 @@ def get_rsi_data(data, period, mavg=14):
     return result
 
 
-def rsi(data, period=7, overbought=70, oversold=30):
-    result = get_rsi_data(data, period)
+def rsi_signal(data, period=7, overbought=70, oversold=30):
+    result = rsi(data, period)
     result['prev_rsi'] = result['rsi'].shift(1)
 
     # Generate buy/sell signals
@@ -36,7 +36,7 @@ def rsi(data, period=7, overbought=70, oversold=30):
 
 
 def rsi_mavg(data, period=7, mavg=14):
-    result = get_rsi_data(data, period, mavg)
+    result = rsi(data, period, mavg)
     result['mavg'] = result['rsi'].rolling(mavg).mean()
     result['prev_mavg'] = result['mavg'].shift(1)
     result['prev_rsi'] = result['rsi'].shift(1)
@@ -59,7 +59,7 @@ def rsi_mavg(data, period=7, mavg=14):
 
 
 def rsi_over_bought_sold(data, period=7, overbought=70, oversold=30):
-    result = get_rsi_data(data, period)
+    result = rsi(data, period)
 
     # Generate buy/sell signals
     result['signal'] = None

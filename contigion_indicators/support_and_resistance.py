@@ -1,21 +1,7 @@
-from numpy import any as np_any, array, newaxis
-from contigion_indicators.util.metatrader import get_point
+from numpy import any as np_any
 
 
-def support_and_resistance(symbol, data, window=2, target=10):
-    point = get_point(symbol)
-    s_and_r, support, resistance = get_support_and_resistance_levels(data, window)
-    close = s_and_r['close'].values
-    suport_levels = array(support['level'])
-    resistance_levels = array(resistance['level'])
-
-    s_and_r['is_support_close'] = np_any(abs(close[:, newaxis] - suport_levels) < (target * point), axis=1)
-    s_and_r['is_resistance_close'] = np_any(abs(close[:, newaxis] - resistance_levels) < (target * point), axis=1)
-
-    return s_and_r
-
-
-def get_support_and_resistance_levels(data, window=5):
+def support_and_resistance(data, window=5):
     result = data.copy(deep=True)
 
     # Get candles within window
