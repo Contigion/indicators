@@ -8,8 +8,6 @@ CANDLESTICK_PATTERNS = ['bull-spinning-top', 'bear-spinning-top', 'bull-marubozu
                         'evening-star', 'three-white-soldiers', 'three-black-crows', 'three-inside-up',
                         'three-inside-down']
 
-COLUMNS = ['date', 'open', 'high', 'low', 'close', 'signal', 'pattern']
-
 
 def get_trend(data):
     result = data.copy(deep=True)
@@ -73,7 +71,7 @@ def candlestick_type(data):
     result.loc[doji, 'pattern'] = 'doji'
     result.loc[doji, 'signal'] = 'sell'
 
-    return result[[COLUMNS]]
+    return result
 
 
 def single_candlestick_pattern(data):
@@ -119,7 +117,7 @@ def single_candlestick_pattern(data):
     result.loc[shooting_star, 'pattern'] = 'shooting-star'
     result.loc[shooting_star, 'signal'] = 'sell'
 
-    return result[[COLUMNS]]
+    return result
 
 
 def dual_candlestick_pattern(data):
@@ -189,7 +187,7 @@ def dual_candlestick_pattern(data):
     result.loc[tweezer_bottoms, 'pattern'] = 'tweezer-bottoms'
     result.loc[tweezer_bottoms, 'signal'] = 'buy'
 
-    return result[[COLUMNS]]
+    return result
 
 
 def triple_candlestick_pattern(data):
@@ -263,4 +261,4 @@ def triple_candlestick_pattern(data):
     result.loc[three_inside_down, 'pattern'] = 'three-inside-down'
     result.loc[three_inside_down, 'signal'] = 'sell'
 
-    return result[[COLUMNS]]
+    return result
