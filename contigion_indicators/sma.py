@@ -35,8 +35,8 @@ def sma_crossover(data, fast=5, slow=13):
     # Generate buy/sell signals
     sma_zip = zip(result['sma_slow'], result['sma_fast'], result['prev_slow'], result['prev_fast'])
     result['signal'] = [
-        'buy' if (curr_slow > curr_fast) and (prev_slow < prev_fast) else
-        'sell' if (curr_slow < curr_fast) and (prev_slow > prev_fast) else
+        'buy' if (curr_fast > curr_slow) and (prev_fast < prev_slow) else
+        'sell' if (curr_fast < curr_slow) and (prev_fast > prev_slow) else
         None
         for curr_slow, curr_fast, prev_slow, prev_fast in sma_zip
     ]
